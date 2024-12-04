@@ -1,4 +1,4 @@
-name: Create Release with Logi Options+ Installer
+name: Create Release with Remote Binary
 
 on:
   workflow_dispatch:
@@ -11,11 +11,9 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Download Logi Options+ Installer
+      - name: Download Binary
         run: |
+          # Fetch the remote binary
           curl -L -o logioptionsplus_installer_offline.zip "https://download01.logi.com/web/ftp/pub/techsupport/optionsplus/logioptionsplus_installer_offline.zip"
 
       - name: Create GitHub Release
@@ -23,9 +21,9 @@ jobs:
         uses: actions/create-release@v1
         with:
           tag_name: ${{ github.ref_name }}
-          release_name: "Logi Options+ Installer v1.83.635658"
+          release_name: "Logi Options+ Installer v${{ github.ref_name }}"
           body: |
-            This release includes the Logi Options+ offline installer version 1.83.635658.
+            This release includes the Logi Options+ offline installer fetched from the official Logitech server.
           draft: false
           prerelease: false
 
