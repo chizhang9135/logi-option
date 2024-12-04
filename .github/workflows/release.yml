@@ -1,40 +1,38 @@
-name: Create Release with Cached File
+name: Create Release with Logi Options+ Installer
 
 on:
-  workflow_dispatch: # Triggered manually from GitHub Actions
+  workflow_dispatch:
   push:
     tags:
-      - 'v*' # Triggered when pushing a new tag, e.g., v1.0.0
+      - 'v*'
 
 jobs:
   release:
-    name: Create GitHub Release
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-    - name: Download File
-      run: |
-        curl -L -o logioptionsplus_installer_offline.zip "https://download01.logi.com/web/ftp/pub/techsupport/optionsplus/logioptionsplus_installer_offline.zip"
+      - name: Download Logi Options+ Installer
+        run: |
+          curl -L -o logioptionsplus_installer_offline.zip "https://download01.logi.com/web/ftp/pub/techsupport/optionsplus/logioptionsplus_installer_offline.zip"
 
-    - name: Upload Release Asset
-      id: upload-release-asset
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: logioptionsplus_installer_offline.zip
-        asset_name: logioptionsplus_installer_offline.zip
-        asset_content_type: application/zip
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: "Logi Options+ Installer v1.83.635658"
+          body: |
+            This release includes the Logi Options+ offline installer version 1.83.635658.
+          draft: false
+          prerelease: false
 
-    - name: Create GitHub Release
-      id: create_release
-      uses: actions/create-release@v1
-      with:
-        tag_name: ${{ github.ref_name }} # Use the tag that triggered the workflow
-        release_name: "Logitech Options+ Offline Installer"
-        body: |
-          This release includes the offline installer for Logitech Options+.
-        draft: false
-        prerelease: false
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: logioptionsplus_installer_offline.zip
+          asset_name: logioptionsplus_installer_offline.zip
+          asset_content_type: application/zip
